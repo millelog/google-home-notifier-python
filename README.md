@@ -33,7 +33,22 @@ You can also do other languages too:
 
 `/say/?text=猿も木から落ちる&lang=ja` 
 
-## running for real
+Play at max volume with emergency sound
+
+`/alarm/?text=Motion detected`
+
+Different emergency oriority values
+
+`/alarm/?text=Motion detected&priority=1`
+
+| Priority        | Behaviour |
+| :-------------: |-------------|
+| 1 | 5 sec alarm + text |
+| 2 | 10 sec alarm + text |
+| 3 | 10 sec alarm + text + 10 sec alarm |
+
+
+## Running for real
 
 I use docker to run it. It works pretty well. I even included some pretty good docker script that will make it easier. Please check that out for more help. 
 

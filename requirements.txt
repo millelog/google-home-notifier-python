@@ -3,3 +3,4 @@ Flask
 pychromecast
 unicode_slugify
 pathlib
+pydub
