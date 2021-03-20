@@ -37,7 +37,7 @@ Play at max volume with emergency sound
 
 `/alarm/?text=Motion detected`
 
-Different emergency oriority values
+Different emergency priority values
 
 `/alarm/?text=Motion detected&priority=1`
 
