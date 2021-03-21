@@ -7,12 +7,15 @@ from slugify import slugify
 from pathlib import Path
 from urllib.parse import urlparse
 from pydub import AudioSegment
+import os
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-alarm_sound_long = AudioSegment.from_mp3(Path("static/emergency_alarm_long.mp3"))
-alarm_sound_short = AudioSegment.from_mp3(Path("static/emergency_alarm_short.mp3"))
+root_dir = os.path.dirname(os.path.abspath(__file__))
+
+alarm_sound_long = AudioSegment.from_mp3(root_dir + "/static/emergency_alarm_long.mp3")
+alarm_sound_short = AudioSegment.from_mp3(root_dir + "/static/emergency_alarm_short.mp3")
 
 chromecast_name = "Sala da pranzo" #edit me to be your google home group
 
@@ -26,7 +29,7 @@ def play_tts(text, lang='en', slow=False, priority=0):
     tts = gTTS(text=text, lang=lang, slow=slow)
     filename = slugify(text+"-"+lang+"-"+str(slow)+"-"+str(priority)) + ".mp3"
     path = "/static/cache/"
-    cache_filename = "." + path + filename
+    cache_filename = root_dir + path + filename
     tts_file = Path(cache_filename)
     if not tts_file.is_file():
         logging.info(tts)
@@ -46,6 +49,7 @@ def play_tts(text, lang='en', slow=False, priority=0):
 
     urlparts = urlparse(request.url)
     mp3_url = "http://" +urlparts.netloc + path + filename 
+
     logging.info(mp3_url)
     if priority > 0:
         play_mp3(mp3_url, volume=1)
