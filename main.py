@@ -17,13 +17,17 @@ root_dir = os.path.dirname(os.path.abspath(__file__))
 alarm_sound_long = AudioSegment.from_mp3(root_dir + "/static/emergency_alarm_long.mp3")
 alarm_sound_short = AudioSegment.from_mp3(root_dir + "/static/emergency_alarm_short.mp3")
 
-chromecast_name = "Sala da pranzo" #edit me to be your google home group
 
 app = Flask(__name__)
 logging.info("Starting up chromecasts")
-chromecasts, _ = pychromecast.get_chromecasts()
 
+#search chromecast by name
+chromecast_name = "Google Home" #edit me to be your google home group
+chromecasts, _ = pychromecast.get_chromecasts()
 cast = next(cc for cc in chromecasts if cc.device.friendly_name == chromecast_name)
+
+#or use a fixed ip address
+#cast = pychromecast.Chromecast('192.168.1.100')
 
 def play_tts(text, lang='en', slow=False, priority=0):
     tts = gTTS(text=text, lang=lang, slow=slow)
@@ -36,7 +40,7 @@ def play_tts(text, lang='en', slow=False, priority=0):
         tts.save(cache_filename)
         if priority > 0:
             file = AudioSegment.from_mp3(cache_filename)
-            amplified = file + 12
+            amplified = file + 10
             if priority is 1:
                 amplified = alarm_sound_short + file
             if priority is 2:
@@ -44,7 +48,7 @@ def play_tts(text, lang='en', slow=False, priority=0):
             if priority is 3:
                 amplified = alarm_sound_long + file + alarm_sound_long
 
-            amplified = amplified + 10
+            amplified = amplified + 8
             amplified.export(cache_filename, format='mp3')
 
     urlparts = urlparse(request.url)
