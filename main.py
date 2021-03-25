@@ -78,7 +78,7 @@ def send_static(path):
 @app.route('/play/<filename>')
 def play(filename):
     urlparts = urlparse(request.url)
-    mp3 = Path("./static/"+filename)
+    mp3 = Path(root_dir + "/static/"+filename)
     if mp3.is_file():
         play_mp3("http://"+urlparts.netloc+"/static/"+filename)
         return filename
