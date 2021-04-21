@@ -30,29 +30,42 @@ cast = next(cc for cc in chromecasts if cc.device.friendly_name == chromecast_na
 #cast = pychromecast.Chromecast('192.168.1.100')
 
 def play_tts(text, lang='en', slow=False, priority=0):
-    tts = gTTS(text=text, lang=lang, slow=slow)
     filename = slugify(text+"-"+lang+"-"+str(slow)+"-"+str(priority)) + ".mp3"
     path = "/static/cache/"
     cache_filename = root_dir + path + filename
     tts_file = Path(cache_filename)
-    if not tts_file.is_file():
-        logging.info(tts)
-        tts.save(cache_filename)
-        if priority > 0:
-            file = AudioSegment.from_mp3(cache_filename)
-            amplified = file + 10
-            if priority is 1:
-                amplified = alarm_sound_short + file
-            if priority is 2:
-                amplified = alarm_sound_long + file
-            if priority is 3:
-                amplified = alarm_sound_long + file + alarm_sound_long
+    error = False
 
-            amplified = amplified + 8
-            amplified.export(cache_filename, format='mp3')
+    if not tts_file.is_file():
+        try:
+            tts = gTTS(text=text, lang=lang, slow=slow)
+            logging.info(tts)
+            tts.save(cache_filename)
+            if priority > 0:
+                file = AudioSegment.from_mp3(cache_filename)
+                amplified = file + 10
+                if priority is 1:
+                    amplified = alarm_sound_short + file
+                if priority is 2:
+                    amplified = alarm_sound_long + file
+                if priority is 3:
+                    amplified = alarm_sound_long + file + alarm_sound_long
+
+                amplified = amplified + 8
+                amplified.export(cache_filename, format='mp3')
+        except:
+            error = True
+            if priority > 0:
+                filename = "emergency_alarm_long.mp3"
+            else:
+                filename = "empty.mp3"
+
 
     urlparts = urlparse(request.url)
-    mp3_url = "http://" +urlparts.netloc + path + filename 
+    if error:
+        mp3_url = "http://" +urlparts.netloc + "/static/" + filename 
+    else:
+        mp3_url = "http://" +urlparts.netloc + path + filename 
 
     logging.info(mp3_url)
     if priority > 0:
