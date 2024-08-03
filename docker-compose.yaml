@@ -8,8 +8,9 @@ services:
     container_name: google-home-notifier
     volumes:
       - ./static:/app/static:ro
-    ports:
-      - "127.0.0.1:5001:5001"
+    networks:
+      chromecast_net:
+        ipv4_address: 192.168.70.150
     environment:
       - PYTHONUNBUFFERED=1
     restart: unless-stopped
@@ -28,3 +29,7 @@ services:
         limits:
           cpus: '0.50'
           memory: 512M
+
+networks:
+  chromecast_net:
+    external: true
