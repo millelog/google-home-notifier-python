@@ -47,4 +47,5 @@ EXPOSE 5005
 ENV PYTHONUNBUFFERED=1
 
 # Command to run the application with Uvicorn, trusting the proxy headers
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "5005", "--proxy-headers", "--forwarded-allow-ips", "*"]
+CMD ["python", "main.py"]
+

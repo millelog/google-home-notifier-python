@@ -4,3 +4,4 @@ pychromecast
 gtts
 python-slugify
 pydub
+starlette
