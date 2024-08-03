@@ -5,7 +5,7 @@ from pychromecast.controllers.media import MediaController
 
 # Constants
 CHROMECAST_NAME = "All"  # Edit this to your Google Home group name
-ALARM_SOUND_URL = "https://www2.cs.uic.edu/~i101/SoundFiles/StarWars60.wav"  # Replace with your desired remote audio URL
+ALARM_SOUND_URL = "https://www2.cs.uic.edu/~i101/SoundFiles/StarWars60.wav"
 
 app = FastAPI()
 
@@ -14,12 +14,15 @@ cast = None
 
 async def discover_chromecast():
     global cast
-    chromecasts, _ = await asyncio.to_thread(pychromecast.get_listed_chromecasts, friendly_names=[CHROMECAST_NAME])
-    if chromecasts:
-        cast = chromecasts[0]
-        await asyncio.to_thread(cast.wait)
-    else:
-        raise Exception(f"Chromecast '{CHROMECAST_NAME}' not found")
+    chromecasts, browser = await asyncio.to_thread(pychromecast.get_listed_chromecasts, friendly_names=[CHROMECAST_NAME])
+    try:
+        if chromecasts:
+            cast = chromecasts[0]
+            await asyncio.to_thread(cast.wait)
+        else:
+            raise Exception(f"Chromecast '{CHROMECAST_NAME}' not found")
+    finally:
+        await asyncio.to_thread(browser.stop_discovery)
 
 @app.on_event("startup")
 async def startup_event():
