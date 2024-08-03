@@ -1,6 +1,6 @@
-gTTS
-Flask
+fastapi
+uvicorn
 pychromecast
-unicode_slugify
-pathlib
+gtts
+python-slugify
 pydub

@@ -1,9 +1,16 @@
-version: '2'
+version: '3'
+
 services:
   home-notifier:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: home-notifier
+    container_name: google-home-notifier
+    volumes:
+      - ./static:/app/static
+    ports:
+      - "5001:5001"
+    network_mode: host  # This is important for Chromecast discovery
+    environment:
+      - PYTHONUNBUFFERED=1  # This ensures Python output is sent straight to the container log
     restart: unless-stopped
-    network_mode: host
