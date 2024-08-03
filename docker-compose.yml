@@ -1,4 +1,4 @@
-version: '3'
+version: '3.8'
 
 services:
   home-notifier:
@@ -7,10 +7,25 @@ services:
       dockerfile: Dockerfile
     container_name: google-home-notifier
     volumes:
-      - ./static:/app/static
+      - ./static:/app/static:ro
     ports:
-      - "5001:5001"
+      - "127.0.0.1:5001:5001"
     network_mode: host  # This is important for Chromecast discovery
     environment:
-      - PYTHONUNBUFFERED=1  # This ensures Python output is sent straight to the container log
+      - PYTHONUNBUFFERED=1
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 512M
