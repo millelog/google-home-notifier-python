@@ -9,7 +9,8 @@ services:
     volumes:
       - ./static:/app/static:ro
     networks:
-      - chromecast_net
+      chromecast_net:
+        ipv4_address: 192.168.70.150
     environment:
       - PYTHONUNBUFFERED=1
     restart: unless-stopped
