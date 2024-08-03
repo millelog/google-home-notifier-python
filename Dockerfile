@@ -41,10 +41,10 @@ RUN mkdir -p /app/static/cache && \
 USER appuser
 
 # Expose the port the app runs on
-EXPOSE 5001
+EXPOSE 5005
 
 # Set Python to run in unbuffered mode
 ENV PYTHONUNBUFFERED=1
 
-# Command to run the application
-CMD ["python", "main.py"]
+# Command to run the application with Uvicorn, trusting the proxy headers
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "5005", "--proxy-headers", "--forwarded-allow-ips", "*"]
