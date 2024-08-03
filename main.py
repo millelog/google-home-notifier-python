@@ -1,6 +1,5 @@
 import asyncio
 from fastapi import FastAPI, HTTPException
-from starlette.middleware.trustedhost import TrustedHostMiddleware
 import pychromecast
 from pychromecast.controllers.media import MediaController
 
@@ -9,7 +8,6 @@ CHROMECAST_NAME = "All"  # Edit this to your Google Home group name
 ALARM_SOUND_URL = "https://www2.cs.uic.edu/~i101/SoundFiles/StarWars60.wav"
 
 app = FastAPI()
-app.add_middleware(TrustedHostMiddleware, allowed_hosts=["alert.loganmiller.dev"])
 
 # Global variable for the Chromecast device
 cast = None
