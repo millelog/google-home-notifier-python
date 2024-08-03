@@ -10,7 +10,6 @@ services:
       - ./static:/app/static:ro
     ports:
       - "127.0.0.1:5001:5001"
-    network_mode: host  # This is important for Chromecast discovery
     environment:
       - PYTHONUNBUFFERED=1
     restart: unless-stopped
