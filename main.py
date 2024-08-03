@@ -117,7 +117,6 @@ async def generate_tts(text: str, lang: str, slow: bool, priority: int) -> Path:
 
     return cache_file
 
-
 async def play_mp3(mp3_url: str, volume: Optional[float] = None):
     global cast
     if cast is None:
@@ -137,7 +136,6 @@ async def play_mp3(mp3_url: str, volume: Optional[float] = None):
     except Exception as e:
         logger.error(f"Error playing media: {str(e)}")
         raise HTTPException(status_code=500, detail="Failed to play media")
-    
 
 @app.get("/static/{path:path}")
 async def send_static(path: str):
@@ -155,12 +153,23 @@ async def play(filename: str, request: Request):
         return {"status": "playing", "file": filename}
     raise HTTPException(status_code=404, detail="File not found")
 
-@app.post("/say")
-async def say(tts_request: TTSRequest, request: Request):
-    tts_file = await generate_tts(tts_request.text, tts_request.lang, tts_request.slow, tts_request.priority)
+@app.get("/say/")
+async def say(request: Request, text: str, lang: str = "en"):
+    if not text:
+        raise HTTPException(status_code=400, detail="Text parameter is required")
+    tts_file = await generate_tts(text, lang, slow=False, priority=0)
     mp3_url = f"{request.base_url}static/cache/{tts_file.name}"
-    await play_mp3(mp3_url, volume=1 if tts_request.priority > 0 else None)
-    return {"status": "playing", "text": tts_request.text}
+    await play_mp3(mp3_url)
+    return {"status": "playing", "text": text}
+
+@app.get("/alarm/")
+async def alarm(request: Request, text: str, lang: str = "it", priority: int = 1):
+    if not text:
+        raise HTTPException(status_code=400, detail="Text parameter is required")
+    tts_file = await generate_tts(text, lang, slow=False, priority=priority)
+    mp3_url = f"{request.base_url}static/cache/{tts_file.name}"
+    await play_mp3(mp3_url, volume=1)
+    return {"status": "playing", "text": text, "priority": priority}
 
 if __name__ == "__main__":
     import uvicorn
